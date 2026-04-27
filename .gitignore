@@ -1,3 +1,23 @@
+# pipeline artifacts
+runs/
+exports/
+*.jsonl
+*.parquet
+
+# local configs (keep templates tracked)
+config/config.yml
+config/patterns.yml
+
+# python caches
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# OS/editor
+.DS_Store
+.vscode/settings.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
