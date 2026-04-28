@@ -37,6 +37,7 @@ Read these files in order:
 1. `dev/instructions/chat-manual.md`
 2. `dev/instructions/goals.md`
 3. `dev/instructions/python-package.md`
+4. `dev/instructions/fluvial-refpipe.md` (unique to this repo)
 
 ## If the assistant cannot read repository files
 If the chat platform cannot access repository files, paste the contents of:
