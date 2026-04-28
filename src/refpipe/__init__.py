@@ -1,1 +1,1 @@
-# Source package for shared project utilities and helper modules.
+"""fluvial-refpipe package."""
