@@ -1,11 +1,19 @@
-# fluvial-refpipe — Design Decisions (Architecture + Operating Model)
+# fluvial-refpipe — Design (Architecture + Operating Model)
 
 Last updated: 2026-04-29  
 Project repo: `MVR-GIS/fluvial-refpipe`  
 Primary operator: single-operator expected (but design tolerates future concurrency)
 
-## Purpose / Problem Statement
+## Document map (where to look)
+This document is the **stable architecture overview** (what is true).
 
+- Architecture decisions (why): `dev/decisions/*.md` (ADRs; YAML front-matter; append-only)
+- Operational procedures (how): `dev/30_runbook.md`
+- Concrete schemas (exact fields/types): `dev/40_schemas.md`
+- Chat governance: `dev/instructions/CHAT_INSTRUCTIONS.md`
+- Working notes / scratchpad: `dev/02_dev.md`
+
+## Purpose / Problem Statement
 Build a reproducible pipeline to:
 1) discover PDFs across multiple source roots that evolve over time,
 2) deduplicate and track them by content identity,
@@ -19,7 +27,22 @@ The pipeline is designed for incremental adoption: start lightweight, then harde
 
 ---
 
-## Non-negotiable principles
+## ADR index (authoritative “why”)
+These decisions are treated as stable contracts. When a decision changes, create a new ADR and mark the prior one as `superseded`.
+
+Suggested ADR set (create as needed):
+- ADR-0001: SHA256 document identity
+- ADR-0002: paths as observations + `last_observed_path`
+- ADR-0003: catalog locking + atomic writes
+- ADR-0004: Policy 1 thresholds and actions
+- ADR-0005: OpenAlex enrichment policy
+- ADR-0006: hybrid chunking + separate references corpus
+- ADR-0007: conda-first + pip editable install
+- ADR-0008: Windows supported terminal = PowerShell (Positron)
+
+---
+
+## Non-negotiable principles (invariants)
 
 ### 1) Identity is content-based (SHA256)
 - **Document identity = SHA256 hash of PDF bytes**.
@@ -188,6 +211,8 @@ One record per extracted element, includes:
 - `unstructured_metadata` as JSON object
 - small doc metadata copied down: `title`, `year`, `doi`, `openalex_id`, `doc_type_guess`
 
+Note: exact field names/types are specified in `dev/40_schemas.md`.
+
 ---
 
 ## Chunking design (Hybrid option)
@@ -251,7 +276,6 @@ Rationale: conda manages heavy deps; pip provides correct Python packaging + CLI
 ---
 
 ## Reproducible chat instructions
-
 This repo uses reproducible chat instruction modules under:
 - `dev/instructions/`
 
@@ -264,8 +288,24 @@ All future chat sessions should specify:
 
 ---
 
-## Open questions / deferred decisions
+## Definition of done (project readiness milestones)
 
+### Milestone A: packaging + CLI skeleton
+- `python -m pip install -e .` succeeds inside the `analysis` env
+- `refpipe --help` works
+- `pytest -q` runs locally
+
+### Milestone B: first end-to-end “toy” run (single PDF)
+- `scan` inventories a known PDF and writes `runs/<run_id>/manifest.csv`
+- `process` produces cached TEI and normalized metadata
+- `copy` places the PDF into the correct sha256 destination
+- `parse` emits `elements.jsonl`
+- `chunk` emits `chunks_main.jsonl` and `chunks_references.jsonl`
+- `export` emits Gemini JSONL and Foundry Parquet
+
+---
+
+## Open questions / deferred decisions
 Track items here as they arise:
 - [ ] Exact Parquet schemas for catalogs and chunks (field names, types, nullability)
 - [ ] Exact scoring model for `score_ingest` (features, weights, versioning)
