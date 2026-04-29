@@ -72,6 +72,30 @@ If work introduces or modifies any major rule/contract, an ADR is REQUIRED, incl
 If an ADR already exists for the topic:
 - create a new ADR if the decision changes materially, and mark the prior ADR `superseded`.
 
+#### ADR threshold (anti-bureaucracy rule) (required)
+ADRs are not immutable “laws”; they are a transparent record of what we decided at the time. They MAY change when new evidence or requirements emerge.
+
+Create a **new ADR** (and mark the prior ADR `superseded`) only when a change affects a **project contract**, such as:
+- identity model (e.g., how documents are identified/deduplicated)
+- storage layout / durability guarantees / locking
+- policy semantics (quarantine/curation rules, thresholds, allowlisting rules)
+- external service contracts (GROBID/OpenAlex usage rules, caching/refresh rules)
+- chunking strategy or export contract
+- output schema that is breaking or introduces a new durable dataset
+- developer environment contract (supported terminal, conda/pip workflow)
+
+Do **NOT** require an ADR for routine work such as:
+- refactors that preserve behavior/output contracts
+- minor bug fixes with unchanged inputs/outputs
+- logging/message improvements
+- adding a CLI flag that does not change defaults/contracts
+- small performance optimizations
+
+When in doubt, prefer the **lightest** documentation that preserves reviewability:
+- update runbook for operator-visible changes,
+- update schemas for output-field changes,
+- update design doc for “what is true now” (often 1–5 lines).
+
 ### Step 2 — Keep the design doc accurate
 - `dev/10_design.md` MUST reflect the current state (“what is true now”).
 - It SHOULD link to ADRs for rationale.

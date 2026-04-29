@@ -28,17 +28,18 @@ The pipeline is designed for incremental adoption: start lightweight, then harde
 ---
 
 ## ADR index (authoritative “why”)
-These decisions are treated as stable contracts. When a decision changes, create a new ADR and mark the prior one as `superseded`.
+These decisions are treated as stable contracts at a point in time. They can change as requirements evolve—when they do, create a new ADR and mark the prior one as `superseded` (don’t rewrite history).
 
-Suggested ADR set (create as needed):
-- ADR-0001: SHA256 document identity
-- ADR-0002: paths as observations + `last_observed_path`
-- ADR-0003: catalog locking + atomic writes
-- ADR-0004: Policy 1 thresholds and actions
-- ADR-0005: OpenAlex enrichment policy
-- ADR-0006: hybrid chunking + separate references corpus
-- ADR-0007: conda-first + pip editable install
-- ADR-0008: Windows supported terminal = PowerShell (Positron)
+ADRs (linkable index):
+- ADR-0001: [SHA256 document identity](decisions/0001-sha256-identity.md)
+- ADR-0002: [Paths as observations + `last_observed_path`](decisions/0002-paths-as-observations.md)
+- ADR-0003: [Separate code (Git) from data/state (agency filesystem)](decisions/0003-separate-code-from-data-storage.md)
+- ADR-0004: [Catalogs: Parquet + file locking + publish CSV views](decisions/0004-catalogs-parquet-locking-and-csv-views.md)
+- ADR-0005: [Policy 1 thresholds and copy/quarantine/skip actions](decisions/0005-policy1-copy-quarantine-skip-thresholds.md)
+- ADR-0006: [OpenAlex enrichment policy (DOI-first; title-search only for scholarly; stale refresh)](decisions/0006-openalex-enrichment-policy.md)
+- ADR-0007: [Hybrid chunking + separate references corpus](decisions/0007-hybrid-chunking-and-separate-references-corpus.md)
+- ADR-0008: [Conda-first env + pip editable installs](decisions/0008-conda-first-plus-pip-editable.md)
+- ADR-0009: [Windows/Positron supported terminal: PowerShell](decisions/0009-windows-terminal-support.md)
 
 ---
 
