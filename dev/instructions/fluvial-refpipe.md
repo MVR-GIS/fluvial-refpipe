@@ -1,9 +1,12 @@
 # fluvial-refpipe — Overlay Module (Fluvial Reference Pipeline Conventions)
 
 This module captures repo-specific workflow decisions for `MVR-GIS/fluvial-refpipe`.
-It is intended to keep future chat sessions consistent and reproducible.
+It is intended to keep future chat sessions consistent, reproducible, and reviewable.
+
+---
 
 ## Non-negotiable design decisions (required)
+
 ### Identity & provenance
 - Document identity is **SHA256** of PDF bytes.
 - File paths are treated as **unstable observations**, not identifiers.
@@ -35,14 +38,17 @@ It is intended to keep future chat sessions consistent and reproducible.
   - refresh OpenAlex if stale/missing (default max_age_days=30)
 
 ### Chunking policy
-- Hybrid chunking (Option 4):
+- Hybrid chunking:
   - TEI/structure-first segmentation
   - fallback heading-based segmentation
   - element-level semantic chunking with precise element/page span metadata
 - References are exported as a separate corpus:
   - `chunks_main.jsonl` and `chunks_references.jsonl`
 
+---
+
 ## Operational robustness (required)
+
 ### Incremental updates
 - Pipeline must support scanning additional source roots over time (“piecewise updates”).
 - Must be idempotent:
@@ -59,6 +65,8 @@ It is intended to keep future chat sessions consistent and reproducible.
   - `curated_latest.csv`
   - `quarantine_latest.csv`
 
+---
+
 ## CLI contract (required)
 Planned commands (names may evolve, but stages must exist):
 - scan
@@ -70,11 +78,7 @@ Planned commands (names may evolve, but stages must exist):
 - export
 - publish-catalog-views (often called automatically)
 
-## Evidence & audit trail (required)
-- Every run must write:
-  - `run-metadata.json` including pipeline version (git commit hash), config snapshot hash, timestamps
-  - action logs for copy/quarantine/skip decisions with reasons and thresholds
-- Avoid silent behavior changes: if heuristics/config change, record versions/hashes used.
+---
 
 ## Interaction style for this repo (required)
 - Prefer implementation choices that preserve auditability and reviewer confidence over maximum convenience.

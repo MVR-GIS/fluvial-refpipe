@@ -22,7 +22,7 @@ Overlays are intended to be **thin** and should not duplicate the base modules.
 Selected recipe (R syntax):
 
 ```r
-c("chat-manual", "goals", "python-package")
+c("chat-manual", "goals", "python-package", "process-docs", "fluvial-refpipe")
 ```
 
 Selected modules (tokens, in order):
@@ -30,6 +30,8 @@ Selected modules (tokens, in order):
 - chat-manual
 - goals
 - python-package
+- process-docs
+- fluvial-refpipe
 
 ## Selected instruction modules (read in order)
 Read these files in order:
@@ -37,7 +39,8 @@ Read these files in order:
 1. `dev/instructions/chat-manual.md`
 2. `dev/instructions/goals.md`
 3. `dev/instructions/python-package.md`
-4. `dev/instructions/fluvial-refpipe.md` (unique to this repo)
+4. `dev/instructions/process-docs.md` (currently unique to this repo)
+5. `dev/instructions/fluvial-refpipe.md` (unique to this repo)
 
 ## If the assistant cannot read repository files
 If the chat platform cannot access repository files, paste the contents of:
