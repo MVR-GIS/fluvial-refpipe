@@ -5,14 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fluvial-refpipe"
 version = "0.1.0"
-description = "Fluvial document reference pipeline (scan → extract → enrich → copy/quarantine → parse → chunk → export)"
+description = "Fluvial reference pipeline (scan → extract → enrich → copy/quarantine → parse → chunk → export)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Proprietary" }
 
-# NOTE: We intentionally keep dependencies out of pyproject.toml.
-# Dependencies are managed by conda/mamba via environment.yml.
-# This avoids split-brain dependency management in a government workstation setting.
+# Dependencies are managed via conda/mamba environment.yml in this repo.
 
 [project.scripts]
 refpipe = "refpipe.cli:app"
