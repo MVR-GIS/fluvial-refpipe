@@ -1,16 +1,25 @@
-# fluvial-refpipe — Project Plan (lightweight)
+# fluvial-refpipe — Project Plan
 
 Last updated: 2026-04-29
+
+Now (max 3):
+- [ ] A1 Confirm editable install + CLI help (next)
+  - Progress: Worked through establishing a correctly configured Python environment. 
+  - Note: `refpipe --help` currently fails unless `typer` is available in the active env; ensure `analysis` is activated in PowerShell
+- [ ] A2 Establish CLI app + command stubs
+- [ ] A3 Add pytest smoke tests
 
 How to use:
 - This is the canonical ordered task list.
 - Keep tasks small (1–3 hours).
 - Each task has a Definition of Done (DoD) and artifacts.
 - When resuming work, read this file + `dev/10_design.md`.
+- Convention: under any task, add a single sub-bullet `- Progress:` with a short present-tense clause (optionally ending with `; next: <next step>`), and remove/overwrite that line once the checkbox is checked.
 
 ## Milestone A — Packaging + CLI skeleton (from dev/10_design.md)
 - [ ] A1: Confirm editable install + CLI help
-  - DoD: `python -m pip install -e .` succeeds; `refpipe --help` works in `analysis` env
+  - [ ] A1: Confirm editable install + CLI help
+  - DoD (PowerShell): `conda activate analysis`; `python -c "import typer, pytest"`; `python -m pip install -e .`; `refpipe --help`
   - Artifacts: terminal transcript; minimal smoke test in `tests/`
 - [ ] A2: Establish CLI app + command stubs
   - DoD: `refpipe scan --help` etc. exist for planned commands

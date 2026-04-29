@@ -8,7 +8,7 @@ reproducibleai::use_instructions(c("chat-manual", "goals", "r-package"))
 ## Start new chat prompt text:
 Target repo: `MVR-GIS/fluvial-refpipe`  
 Read `dev/instructions/CHAT_INSTRUCTIONS.md` and follow the specified instruction modules in order. 
-New Task: 
+Task: Next unchecked item in `dev/05_plan.md`.
 
 ## Update AI Chat Artifacts
 ```{r}
