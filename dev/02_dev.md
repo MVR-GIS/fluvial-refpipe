@@ -11,6 +11,9 @@ reproducibleai::use_instructions(c("chat-manual", "goals", "r-package"))
 # and follow the instruction modules listed under "Selected 
 # instruction modules (read in order)".
 
+Target repo: `MVR-GIS/fluvial-refpipe`  
+Read `dev/instructions/CHAT_INSTRUCTIONS.md` and follow the specified instruction modules in order. 
+
 ## Update AI Chat Artifacts
 ```{r}
 reproducibleai::extract_copilot_chat(file.path(
