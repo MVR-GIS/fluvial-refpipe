@@ -29,7 +29,8 @@ How to use:
 ## Milestone B — First end-to-end “toy run” (single PDF)
 - [ ] B1: Define config model + example config
   - DoD: config validates; documented in runbook
-  - Artifacts: `src/refpipe/config.py`, `config.example.yml`, runbook update
+  - Artifacts: `src/refpipe/config.py`, `config/config.example.yml`, runbook update
+  - Progress: updating plan and runbook
 - [ ] B2: Implement `scan` to build run inventory + compute sha256
   - DoD: writes `runs/<run_id>/manifest.csv` with sha256 + path observation
   - Artifacts: run folder + sample output
