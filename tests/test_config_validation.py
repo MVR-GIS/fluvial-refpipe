@@ -92,29 +92,36 @@ scan:
 
 
 def test_absolute_paths_are_preserved(tmp_path: Path) -> None:
-    # Using tmp_path absolute paths should remain unchanged (aside from normalization)
-    runs_root = (tmp_path / "runs_abs").resolve()
-    incoming = (tmp_path / "incoming_abs").resolve()
-    incoming.mkdir(parents=True, exist_ok=True)
+    # Use tmp_path absolute paths; render with forward slashes to keep YAML parsing simple on Windows.
+    runs_root = (tmp_path / "runs_abs").resolve().as_posix()
+    incoming = (tmp_path / "incoming_abs").resolve().as_posix()
+    (tmp_path / "incoming_abs").mkdir(parents=True, exist_ok=True)
+
+    library = (tmp_path / "library").resolve().as_posix()
+    quarantine = (tmp_path / "quarantine").resolve().as_posix()
+    state = (tmp_path / "state").resolve().as_posix()
 
     cfg = tmp_path / "config.yml"
     cfg.write_text(
-        f"""
-paths:
-  library_pdfs: "{(tmp_path / "library").resolve()}"
-  quarantine_pdfs: "{(tmp_path / "quarantine").resolve()}"
-  state_root: "{(tmp_path / "state").resolve()}"
-  runs_root: "{runs_root}"
-scan:
-  source_roots:
-    - "{incoming}"
-""".lstrip(),
+        "\n".join(
+            [
+                "paths:",
+                f'  library_pdfs: "{library}"',
+                f'  quarantine_pdfs: "{quarantine}"',
+                f'  state_root: "{state}"',
+                f'  runs_root: "{runs_root}"',
+                "scan:",
+                "  source_roots:",
+                f'    - "{incoming}"',
+                "",
+            ]
+        ),
         encoding="utf-8",
     )
 
     parsed = RefpipeConfig.from_yaml(cfg)
-    assert Path(parsed.paths.runs_root) == runs_root
-    assert [Path(p) for p in parsed.scan.source_roots] == [incoming]
+    assert Path(parsed.paths.runs_root) == Path(runs_root)
+    assert [Path(p) for p in parsed.scan.source_roots] == [Path(incoming)]
 
 
 def test_missing_config_file_raises_file_not_found(tmp_path: Path) -> None:

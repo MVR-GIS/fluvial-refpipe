@@ -36,6 +36,13 @@ mamba env create -f environment.yml
 conda activate analysis
 mamba env update -f environment.yml --prune
 python -m pip install -e .
-refpipe --help
+pytest -q
+```
+
+
+## Run tests
+```{powershell}
+conda activate analysis
+python -m pip install -e .
 pytest -q
 ```
