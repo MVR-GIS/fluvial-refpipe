@@ -8,7 +8,7 @@ from refpipe.config import RefpipeConfig
 
 
 def test_config_example_validates(tmp_path: Path) -> None:
-    # create a minimal valid config yaml in tmp
+    # minimal valid config yaml
     cfg = tmp_path / "config.yml"
     cfg.write_text(
         """
@@ -50,19 +50,74 @@ thresholds:
         _ = RefpipeConfig.from_yaml(cfg)
 
 
-def test_paths_must_be_windows_drive_paths(tmp_path: Path) -> None:
-    cfg = tmp_path / "bad_paths.yml"
-    cfg.write_text(
+def test_paths_allow_relative_and_resolve_relative_to_config_dir(tmp_path: Path) -> None:
+    # Layout:
+    #   tmp_path/
+    #     cfg/config.yml
+    #     data/incoming_pdfs/a.pdf
+    #     out/{library_pdfs, quarantine_pdfs, state, runs}
+    cfg_dir = tmp_path / "cfg"
+    data_dir = tmp_path / "data" / "incoming_pdfs"
+    out_dir = tmp_path / "out"
+
+    cfg_dir.mkdir(parents=True, exist_ok=True)
+    data_dir.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    (data_dir / "a.pdf").write_bytes(b"%PDF-1.4\nhello\n%%EOF\n")
+
+    cfg_path = cfg_dir / "config.yml"
+    cfg_path.write_text(
         """
 paths:
-  library_pdfs: "/tmp/library"
-  quarantine_pdfs: "R:/q"
-  state_root: "R:/s"
-  runs_root: "R:/r"
+  library_pdfs: "../out/library_pdfs"
+  quarantine_pdfs: "../out/quarantine_pdfs"
+  state_root: "../out/state"
+  runs_root: "../out/runs"
 scan:
-  source_roots: ["R:/incoming"]
+  source_roots:
+    - "../data/incoming_pdfs"
 """.lstrip(),
         encoding="utf-8",
     )
-    with pytest.raises(ValueError, match="must be a Windows drive path"):
-        _ = RefpipeConfig.from_yaml(cfg)
+
+    cfg = RefpipeConfig.from_yaml(cfg_path)
+
+    assert Path(cfg.paths.library_pdfs) == (cfg_dir / "../out/library_pdfs").resolve()
+    assert Path(cfg.paths.quarantine_pdfs) == (cfg_dir / "../out/quarantine_pdfs").resolve()
+    assert Path(cfg.paths.state_root) == (cfg_dir / "../out/state").resolve()
+    assert Path(cfg.paths.runs_root) == (cfg_dir / "../out/runs").resolve()
+
+    assert [Path(p) for p in cfg.scan.source_roots] == [(cfg_dir / "../data/incoming_pdfs").resolve()]
+
+
+def test_absolute_paths_are_preserved(tmp_path: Path) -> None:
+    # Using tmp_path absolute paths should remain unchanged (aside from normalization)
+    runs_root = (tmp_path / "runs_abs").resolve()
+    incoming = (tmp_path / "incoming_abs").resolve()
+    incoming.mkdir(parents=True, exist_ok=True)
+
+    cfg = tmp_path / "config.yml"
+    cfg.write_text(
+        f"""
+paths:
+  library_pdfs: "{(tmp_path / "library").resolve()}"
+  quarantine_pdfs: "{(tmp_path / "quarantine").resolve()}"
+  state_root: "{(tmp_path / "state").resolve()}"
+  runs_root: "{runs_root}"
+scan:
+  source_roots:
+    - "{incoming}"
+""".lstrip(),
+        encoding="utf-8",
+    )
+
+    parsed = RefpipeConfig.from_yaml(cfg)
+    assert Path(parsed.paths.runs_root) == runs_root
+    assert [Path(p) for p in parsed.scan.source_roots] == [incoming]
+
+
+def test_missing_config_file_raises_file_not_found(tmp_path: Path) -> None:
+    missing = tmp_path / "nope.yml"
+    with pytest.raises(FileNotFoundError, match="Config file not found"):
+        _ = RefpipeConfig.from_yaml(missing)
