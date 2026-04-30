@@ -130,6 +130,77 @@ Planned commands (A2) are registered and must have working help pages:
 
 ---
 
+## Configuration (Milestone B1)
+
+The pipeline is configured by a YAML file passed via `--config`.
+
+### File locations (repo convention)
+
+- Example (tracked): `config/config.example.yml`
+- Operator config (NOT tracked): `config/config.yml` (gitignored)
+
+Create your operator config:
+
+```powershell
+# from repo root
+copy config/config.example.yml config/config.yml
+```
+
+Edit `config/config.yml` and set:
+
+- `paths.*` to your shared-drive or local dev paths (see local dev mode below)
+- `scan.source_roots` to one or more folders containing PDFs to scan
+
+### Validate configuration (recommended before any run)
+
+Config validation is strict and happens before command execution.
+
+```powershell
+conda activate analysis
+python -m pip install -e .
+
+# Validate via Python (fast, explicit)
+python -c "from refpipe.config import RefpipeConfig; RefpipeConfig.from_yaml('config/config.yml'); print('config ok')"
+
+# Optional: run the test gate
+pytest -q
+```
+
+### Local dev mode (when VPN/shared drives are unavailable)
+
+When VPN access to `R:/...` is patchy, you can run the pipeline against **local folders** while developing.
+
+Recommended local layout (outside git artifacts, safe to delete):
+
+- `C:/workspace/_refpipe_dev/library_pdfs/`
+- `C:/workspace/_refpipe_dev/quarantine_pdfs/`
+- `C:/workspace/_refpipe_dev/state/`
+- `C:/workspace/_refpipe_dev/runs/`
+
+Example local dev config:
+
+```yaml
+paths:
+  library_pdfs: "C:/workspace/_refpipe_dev/library_pdfs"
+  quarantine_pdfs: "C:/workspace/_refpipe_dev/quarantine_pdfs"
+  state_root: "C:/workspace/_refpipe_dev/state"
+  runs_root: "C:/workspace/_refpipe_dev/runs"
+scan:
+  source_roots:
+    - "C:/workspace/_refpipe_dev/incoming_pdfs"
+thresholds:
+  candidate_threshold: 0.30
+  ingest_threshold: 0.65
+```
+
+Notes:
+- Local dev mode is intended for testing pipeline mechanics and output formats.
+- Do not commit local paths in `config/config.yml` (it is intentionally untracked).
+- The production/shared-drive paths remain the canonical defaults shown in `config/config.example.yml`.
+
+
+
+
 ## Recent progress log (from dev/05_plan.md)
  
 - 2026-04-30: A1 completed locally:
