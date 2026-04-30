@@ -22,7 +22,7 @@ How to use:
 - [x] A2: Establish CLI app + command stubs
   - DoD: `refpipe scan --help` etc. exist for planned commands
   - Artifacts: `src/refpipe/cli/app.py`
-- [ ] A3: Add pytest smoke tests
+- [x] A3: Add pytest smoke tests
   - DoD: `pytest -q` passes locally
   - Artifacts: `tests/test_cli_smoke.py`
 

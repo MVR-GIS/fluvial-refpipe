@@ -7,6 +7,8 @@ from refpipe.cli import app
 
 runner = CliRunner()
 
+def test_import_refpipe() -> None:
+    import refpipe  # noqa: F401
 
 def test_refpipe_help_exits_zero() -> None:
     result = runner.invoke(app, ["--help"])
@@ -14,7 +16,6 @@ def test_refpipe_help_exits_zero() -> None:
     # keep assertions resilient but meaningful
     assert "Fluvial reference pipeline" in result.stdout
     assert "Commands" in result.stdout
-
 
 def test_refpipe_scan_help_exits_zero() -> None:
     result = runner.invoke(app, ["scan", "--help"])
