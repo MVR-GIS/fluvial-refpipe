@@ -1,4 +1,4 @@
-# fluvial-refpipe ��� Runbook
+# fluvial-refpipe - Runbook
 
 Last updated: 2026-04-30
 
@@ -71,7 +71,7 @@ Expected:
 
 ## Test gate (Milestone A)
 
-### A1 — CLI smoke tests
+### A1/A2 — CLI smoke tests
 
 Run from repo root:
 
@@ -87,8 +87,28 @@ Expected:
 Notes:
 - The repository includes a minimal CLI smoke test file:
   - `tests/test_cli_smoke.py`
-- These tests ensure `refpipe --help` and `refpipe scan --help` succeed and provide stable help text.
+- These tests ensure `refpipe --help` and each planned subcommand `--help` succeeds and provides stable help text.
 
+---
+
+## CLI structure (Milestone A2)
+
+The CLI is implemented as a structured package:
+
+- App registration (Typer `app`):
+  - `src/refpipe/cli/app.py`
+- Command stubs (one file per command):
+  - `src/refpipe/cli/commands/`
+
+Planned commands (A2) are registered and must have working help pages:
+- `scan`
+- `process`
+- `copy`
+- `rescore-quarantine`
+- `parse`
+- `chunk`
+- `export`
+ 
 ---
 
 ## Troubleshooting
@@ -103,15 +123,22 @@ Notes:
    - Confirm: `python -c "import refpipe; import refpipe.cli; print('ok')"`
 
 3) Command not on PATH in the active shell
-   - In the active env, try: `python -m refpipe.cli --help`
+   - In the active env, try: `python -m refpipe.cli.app --help`
    - If that works but `refpipe` does not, re-check shell activation and `pip install -e .` output.
 
 ---
 
 ## Recent progress log (from dev/05_plan.md)
-
+ 
 - 2026-04-30: A1 completed locally:
   - `mamba env update -f environment.yml --prune` (no changes)
   - `python -m pip install -e .` succeeded
   - `refpipe --help` succeeded (Typer app shows planned commands)
-  - `pytest -q` => `2 passed`
+  - `pytest -q` => passing
+
+- 2026-04-30: A2 completed locally:
+  - CLI refactored into structured package:
+    - `src/refpipe/cli/app.py`
+    - `src/refpipe/cli/commands/*.py`
+  - `refpipe <command> --help` works for all planned commands
+  - `pytest -q` => `8 passed` (CLI help smoke tests)

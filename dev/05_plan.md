@@ -1,10 +1,10 @@
 # fluvial-refpipe — Project Plan
 
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 
 Now (max 3):
-- [ ] A1 Confirm editable install + CLI help (next) 
-- [ ] A2 Establish CLI app + command stubs
+- [x] A1 Confirm editable install + CLI help
+- [x] A2 Establish CLI app + command stubs
 - [ ] A3 Add pytest smoke tests
 
 How to use:
@@ -19,9 +19,9 @@ How to use:
   - [x] A1: Confirm editable install + CLI help
   - DoD (PowerShell): `conda activate analysis`; `python -c "import typer, pytest"`; `python -m pip install -e .`; `refpipe --help`
   - Artifacts: terminal transcript; minimal passing smoke test in `tests/`
-- [ ] A2: Establish CLI app + command stubs
+- [x] A2: Establish CLI app + command stubs
   - DoD: `refpipe scan --help` etc. exist for planned commands
-  - Artifacts: `src/refpipe/cli.py`
+  - Artifacts: `src/refpipe/cli/app.py`
 - [ ] A3: Add pytest smoke tests
   - DoD: `pytest -q` passes locally
   - Artifacts: `tests/test_cli_smoke.py`
