@@ -220,3 +220,11 @@ Notes:
   - Pytest configuration added to `pyproject.toml`:
     - `[tool.pytest.ini_options]` with `testpaths=["tests"]` and `addopts="-q"`
   - Import smoke test added (`test_import_refpipe`)
+
+- 2026-04-30: B1 completed (config model + example config):
+  - Config model implemented: `src/refpipe/config.py` (`RefpipeConfig.from_yaml`)
+  - Example config added: `config/config.example.yml` (copy to `config/config.yml`)
+  - Validation behavior:
+    - strict schema validation (Pydantic)
+    - Windows absolute drive paths required (no relative paths)
+    - thresholds defaults: candidate=0.30, ingest=0.65; requires ingest >= candidate
