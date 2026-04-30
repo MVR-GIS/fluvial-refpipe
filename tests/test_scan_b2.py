@@ -4,9 +4,8 @@ import csv
 import hashlib
 from pathlib import Path
 
-import pytest
-
-from refpipe.cli.commands.scan import scan
+from refpipe.config import RefpipeConfig
+from refpipe.stages.scan_stage import run_scan
 
 
 def _write_text(path: Path, text: str) -> None:
@@ -30,8 +29,7 @@ def test_scan_writes_manifest_with_expected_columns_and_sha(tmp_path: Path) -> N
     source_root.mkdir(parents=True, exist_ok=True)
 
     pdf_bytes = b"%PDF-1.4\nhello\n%%EOF\n"
-    pdf_path = source_root / "a.pdf"
-    pdf_path.write_bytes(pdf_bytes)
+    (source_root / "a.pdf").write_bytes(pdf_bytes)
 
     config_path = tmp_path / "config.yml"
     _write_text(
@@ -39,9 +37,9 @@ def test_scan_writes_manifest_with_expected_columns_and_sha(tmp_path: Path) -> N
         "\n".join(
             [
                 "paths:",
-                f'  library_pdfs: "C:/workspace/_refpipe_dev/library_pdfs"',
-                f'  quarantine_pdfs: "C:/workspace/_refpipe_dev/quarantine_pdfs"',
-                f'  state_root: "C:/workspace/_refpipe_dev/state"',
+                '  library_pdfs: "./library_pdfs"',
+                '  quarantine_pdfs: "./quarantine_pdfs"',
+                '  state_root: "./state"',
                 f'  runs_root: "{runs_root.as_posix()}"',
                 "scan:",
                 "  source_roots:",
@@ -54,18 +52,11 @@ def test_scan_writes_manifest_with_expected_columns_and_sha(tmp_path: Path) -> N
         ),
     )
 
-    # Execute scan (creates a run folder under runs_root)
-    scan(config=str(config_path))
+    cfg = RefpipeConfig.from_yaml(config_path)
+    result = run_scan(cfg)
 
-    # Find the run folder created
-    run_dirs = [p for p in runs_root.iterdir() if p.is_dir()]
-    assert len(run_dirs) == 1
-    run_dir = run_dirs[0]
-
-    manifest_path = run_dir / "manifest.csv"
-    assert manifest_path.exists()
-
-    rows = _read_manifest(manifest_path)
+    assert result.manifest_path.exists()
+    rows = _read_manifest(result.manifest_path)
     assert len(rows) == 1
 
     row = rows[0]
@@ -98,9 +89,9 @@ def test_scan_manifest_order_is_deterministic(tmp_path: Path) -> None:
         "\n".join(
             [
                 "paths:",
-                f'  library_pdfs: "C:/workspace/_refpipe_dev/library_pdfs"',
-                f'  quarantine_pdfs: "C:/workspace/_refpipe_dev/quarantine_pdfs"',
-                f'  state_root: "C:/workspace/_refpipe_dev/state"',
+                '  library_pdfs: "./library_pdfs"',
+                '  quarantine_pdfs: "./quarantine_pdfs"',
+                '  state_root: "./state"',
                 f'  runs_root: "{runs_root.as_posix()}"',
                 "scan:",
                 "  source_roots:",
@@ -110,11 +101,8 @@ def test_scan_manifest_order_is_deterministic(tmp_path: Path) -> None:
         ),
     )
 
-    scan(config=str(config_path))
+    cfg = RefpipeConfig.from_yaml(config_path)
+    result = run_scan(cfg)
 
-    run_dirs = [p for p in runs_root.iterdir() if p.is_dir()]
-    assert len(run_dirs) == 1
-    run_dir = run_dirs[0]
-
-    rows = _read_manifest(run_dir / "manifest.csv")
+    rows = _read_manifest(result.manifest_path)
     assert [Path(r["last_observed_path"]).name for r in rows] == ["a.pdf", "b.pdf"]
