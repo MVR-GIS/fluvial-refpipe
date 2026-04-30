@@ -71,7 +71,7 @@ Expected:
 
 ## Test gate (Milestone A)
 
-### A1/A2 — CLI smoke tests
+### A1/A2/A3 — pytest smoke tests
 
 Run from repo root:
 
@@ -108,7 +108,9 @@ Planned commands (A2) are registered and must have working help pages:
 - `parse`
 - `chunk`
 - `export`
- 
+- `refpipe <command> --help` works for all planned commands
+- `pytest -q` => `8 passed` (CLI help smoke tests) 
+
 ---
 
 ## Troubleshooting
@@ -142,3 +144,8 @@ Planned commands (A2) are registered and must have working help pages:
     - `src/refpipe/cli/commands/*.py`
   - `refpipe <command> --help` works for all planned commands
   - `pytest -q` => `8 passed` (CLI help smoke tests)
+
+- 2026-04-30: A3 completed locally:
+  - Pytest configuration added to `pyproject.toml`:
+    - `[tool.pytest.ini_options]` with `testpaths=["tests"]` and `addopts="-q"`
+  - Import smoke test added (`test_import_refpipe`)

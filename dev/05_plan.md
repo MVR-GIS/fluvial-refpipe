@@ -5,7 +5,7 @@ Last updated: 2026-04-30
 Now (max 3):
 - [x] A1 Confirm editable install + CLI help
 - [x] A2 Establish CLI app + command stubs
-- [ ] A3 Add pytest smoke tests
+- [x] A3 Add pytest smoke tests
 
 How to use:
 - This is the canonical ordered task list.
