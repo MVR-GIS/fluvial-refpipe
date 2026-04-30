@@ -1,6 +1,6 @@
 # fluvial-refpipe — Design (Architecture + Operating Model)
 
-Last updated: 2026-04-29  
+Last updated: 2026-04-30  
 Project repo: `MVR-GIS/fluvial-refpipe`  
 Primary operator: single-operator expected (but design tolerates future concurrency)
 
@@ -142,6 +142,34 @@ Rationale: quarantine review needs evidence and context.
 - Scope: **quarantine only**
 - Refresh: only if stale/missing
 - Default: `max_age_days = 30`
+
+---
+
+## Operator configuration (Milestone B1)
+
+### Contract
+- The pipeline is configured via a YAML file provided on the CLI with `--config`.
+- Configuration is validated at the CLI boundary (fail fast) before any stage executes.
+- YAML is treated as **literal-only** for reproducibility (no env-var interpolation).
+- Config fields/types/defaults are authoritative in `dev/40_schemas.md`.
+
+### Repo convention (locations)
+- Tracked example config: `config/config.example.yml`
+- Operator config (untracked): `config/config.yml` (gitignored)
+
+Rationale:
+- keep sensitive/operator-specific paths out of git
+- provide a stable, reviewable template and contract in the repo
+
+### Local dev mode (robustness)
+When VPN/shared-drive access is patchy, operators may point `paths.*` and `scan.source_roots`
+to local folders (e.g., under `C:/workspace/_refpipe_dev/`) to test pipeline mechanics and output
+formats without requiring `R:/...` access.
+
+Local dev mode must still preserve the core invariants:
+- sha256 identity
+- separation of code (git) vs data/state (filesystem)
+- deterministic, auditable run artifacts under `runs_root`
 
 ---
 
