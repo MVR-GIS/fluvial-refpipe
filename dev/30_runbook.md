@@ -265,3 +265,11 @@ Notes:
     - strict schema validation (Pydantic)
     - paths may be absolute or relative (relative resolved relative to config file directory)
     - thresholds defaults: candidate=0.30, ingest=0.65; requires ingest >= candidate
+
+- 2026-04-30: B2 completed (scan manifest + sha256):
+  - Stage implementation: `src/refpipe/stages/scan_stage.py` (`run_scan`)
+  - CLI wrapper: `src/refpipe/cli/commands/scan.py` (thin; calls stage)
+  - `refpipe scan --config config/config.yml` writes:
+    - `<runs_root>/<run_id>/manifest.csv`
+  - Tests added/updated:
+    - `tests/test_scan_b2.py` (stage-level tests; deterministic ordering; sha256)

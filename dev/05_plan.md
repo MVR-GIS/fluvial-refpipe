@@ -4,7 +4,7 @@ Last updated: 2026-04-30
 
 Now (max 3):
 - [x] B1: Define config model + example config
-- [ ] B2: Implement `scan` to build run inventory + compute sha256
+- [x] B2: Implement `scan` to build run inventory + compute sha256
 - [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
 
 How to use:
@@ -30,8 +30,7 @@ How to use:
 - [x] B1: Define config model + example config
   - DoD: config validates; documented in runbook
   - Artifacts: `src/refpipe/config.py`, `config/config.example.yml`, runbook update
-- [ ] B2: Implement `scan` to build run inventory + compute sha256
-  - Progress: implementing scan manifest writer under runs_root and streamed sha256 hashing
+- [x] B2: Implement `scan` to build run inventory + compute sha256
   - DoD: writes `runs/<run_id>/manifest.csv` with sha256 + path observation
   - Artifacts: run folder + sample output
 - [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
