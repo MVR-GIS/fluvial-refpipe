@@ -1,23 +1,119 @@
 from __future__ import annotations
-from refpipe.config import RefpipeConfig
+
+import csv
+import hashlib
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
 
 import typer
+
+from refpipe.config import RefpipeConfig
+
+
+@dataclass(frozen=True)
+class _PdfObservation:
+    document_sha256: str
+    document_id: str
+    last_observed_path: str
+
+
+def _iter_pdf_paths(source_roots: list[str]) -> list[Path]:
+    pdfs: list[Path] = []
+    for root in source_roots:
+        root_path = Path(root)
+        if not root_path.exists():
+            raise FileNotFoundError(f"scan.source_roots entry does not exist: {root_path}")
+        if not root_path.is_dir():
+            raise NotADirectoryError(f"scan.source_roots entry is not a directory: {root_path}")
+
+        for p in root_path.rglob("*.pdf"):
+            # Skip non-files (defensive; rglob should return files but be safe)
+            if p.is_file():
+                pdfs.append(p)
+
+    # Deterministic order for stable manifests
+    pdfs_sorted = sorted(pdfs, key=lambda x: str(x).lower())
+    return pdfs_sorted
+
+
+def _sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        while True:
+            b = f.read(chunk_size)
+            if not b:
+                break
+            h.update(b)
+    return h.hexdigest()
+
+
+def _build_run_id(collected_at_utc: datetime) -> str:
+    # Compact, sortable, Windows-safe
+    return collected_at_utc.strftime("%Y%m%dT%H%M%SZ")
 
 
 def scan(config: str = typer.Option(..., "--config", help="Path to config YAML.")) -> None:
     """
-    Scan configured source_roots for PDFs and update catalogs (sha256 identity).
+    Scan configured source_roots for PDFs and compute sha256 identities.
 
-    Parameters
-    ----------
-    config:
-        Path to the operator configuration YAML file (usually config/config.yml).
+    Outputs
+    -------
+    - Writes run artifacts under `<runs_root>/<run_id>/`:
+      - `manifest.csv`
 
-    Side Effects
-    ------------
-    - Writes run artifacts under runs/<run_id>/inventory/
-    - Updates shared-drive catalogs under R:/.../state/catalogs/ (with file lock)
-    - Regenerates csv views (pdf_catalog_latest.csv, curated_latest.csv, quarantine_latest.csv)
+    Notes
+    -----
+    - This is the B2 (Option 1) implementation: it does NOT update shared catalogs yet.
+    - Deterministic manifest ordering is enforced by sorting observed paths.
     """
-    _ = RefpipeConfig.from_yaml(config)
-    raise NotImplementedError
+    cfg = RefpipeConfig.from_yaml(config)
+
+    collected_at_utc = datetime.now(timezone.utc)
+    run_id = _build_run_id(collected_at_utc)
+
+    runs_root = Path(cfg.paths.runs_root)
+    run_dir = runs_root / run_id
+    run_dir.mkdir(parents=True, exist_ok=False)
+
+    manifest_path = run_dir / "manifest.csv"
+
+    pdf_paths = _iter_pdf_paths(cfg.scan.source_roots)
+    observations: list[_PdfObservation] = []
+
+    for pdf_path in pdf_paths:
+        sha = _sha256_file(pdf_path)
+        observations.append(
+            _PdfObservation(
+                document_sha256=sha,
+                document_id=f"sha256:{sha}",
+                last_observed_path=str(pdf_path),
+            )
+        )
+
+    with manifest_path.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(
+            f,
+            fieldnames=[
+                "run_id",
+                "collected_at_utc",
+                "document_sha256",
+                "document_id",
+                "last_observed_path",
+            ],
+        )
+        w.writeheader()
+        for obs in observations:
+            w.writerow(
+                {
+                    "run_id": run_id,
+                    "collected_at_utc": collected_at_utc.isoformat(),
+                    "document_sha256": obs.document_sha256,
+                    "document_id": obs.document_id,
+                    "last_observed_path": obs.last_observed_path,
+                }
+            )
+
+    typer.echo(f"Wrote manifest: {manifest_path}")
+    typer.echo(f"PDFs observed: {len(observations)}")
+    typer.echo(f"run_id: {run_id}")

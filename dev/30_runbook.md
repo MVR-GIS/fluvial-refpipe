@@ -198,6 +198,37 @@ Notes:
 - Do not commit local paths in `config/config.yml` (it is intentionally untracked).
 - The production/shared-drive paths remain the canonical defaults shown in `config/config.example.yml`.
 
+---
+
+## Scan (Milestone B2)
+
+The `scan` command discovers PDFs in `scan.source_roots`, computes sha256 identities, and writes a per-run manifest.
+
+### Run scan
+
+From repo root:
+
+    conda activate analysis
+    python -m pip install -e .
+    refpipe scan --config config/config.yml
+
+Expected:
+- A new run folder is created under `paths.runs_root`:
+  - `<runs_root>/<run_id>/manifest.csv`
+- The command prints the manifest path, observed PDF count, and `run_id`.
+
+### Manifest contents
+
+`manifest.csv` includes:
+- `run_id`
+- `collected_at_utc`
+- `document_sha256`
+- `document_id` (`sha256:<hex>`)
+- `last_observed_path`
+
+Notes:
+- B2 writes run artifacts only; durable catalogs and locks are added later (Milestone C).
+
 
 
 

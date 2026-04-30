@@ -31,6 +31,7 @@ How to use:
   - DoD: config validates; documented in runbook
   - Artifacts: `src/refpipe/config.py`, `config/config.example.yml`, runbook update
 - [ ] B2: Implement `scan` to build run inventory + compute sha256
+  - Progress: implementing scan manifest writer under runs_root and streamed sha256 hashing
   - DoD: writes `runs/<run_id>/manifest.csv` with sha256 + path observation
   - Artifacts: run folder + sample output
 - [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
