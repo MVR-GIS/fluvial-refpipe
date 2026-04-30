@@ -22,17 +22,17 @@ reproducibleai::extract_copilot_chat(file.path(
 # Conda Environment
 
 ## Initialize conda to work inside PowerShell (do once per computer)
-```{bash}
+```{powershell}
 conda init powershell
 ```
 
 ## Create the conda environment (do once percomputer)
-```{bash}
+```{powershell}
 mamba env create -f environment.yml
 ```
 
 ## Daily update routine
-```{bash}
+```{powershell}
 conda activate analysis
 mamba env update -f environment.yml --prune
 python -m pip install -e .

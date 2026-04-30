@@ -3,9 +3,7 @@
 Last updated: 2026-04-29
 
 Now (max 3):
-- [ ] A1 Confirm editable install + CLI help (next)
-  - Progress: Worked through establishing a correctly configured Python environment. 
-  - Note: `refpipe --help` currently fails unless `typer` is available in the active env; ensure `analysis` is activated in PowerShell
+- [ ] A1 Confirm editable install + CLI help (next) 
 - [ ] A2 Establish CLI app + command stubs
 - [ ] A3 Add pytest smoke tests
 
@@ -17,10 +15,10 @@ How to use:
 - Convention: under any task, add a single sub-bullet `- Progress:` with a short present-tense clause (optionally ending with `; next: <next step>`), and remove/overwrite that line once the checkbox is checked.
 
 ## Milestone A — Packaging + CLI skeleton (from dev/10_design.md)
-- [ ] A1: Confirm editable install + CLI help
-  - [ ] A1: Confirm editable install + CLI help
+- [x] A1: Confirm editable install + CLI help
+  - [x] A1: Confirm editable install + CLI help
   - DoD (PowerShell): `conda activate analysis`; `python -c "import typer, pytest"`; `python -m pip install -e .`; `refpipe --help`
-  - Artifacts: terminal transcript; minimal smoke test in `tests/`
+  - Artifacts: terminal transcript; minimal passing smoke test in `tests/`
 - [ ] A2: Establish CLI app + command stubs
   - DoD: `refpipe scan --help` etc. exist for planned commands
   - Artifacts: `src/refpipe/cli.py`
