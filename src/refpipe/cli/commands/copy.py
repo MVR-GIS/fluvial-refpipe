@@ -1,4 +1,5 @@
 from __future__ import annotations
+from refpipe.config import RefpipeConfig
 
 import typer
 
@@ -11,4 +12,5 @@ def copy(config: str = typer.Option(..., "--config", help="Path to config YAML."
     -----------
     If destination <sha256>.pdf exists, no re-copy occurs; the action is recorded as 'exists'.
     """
+    _ = RefpipeConfig.from_yaml(config)
     raise NotImplementedError

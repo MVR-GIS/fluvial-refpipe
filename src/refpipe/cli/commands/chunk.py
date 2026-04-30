@@ -1,4 +1,5 @@
 from __future__ import annotations
+from refpipe.config import RefpipeConfig
 
 import typer
 
@@ -13,4 +14,5 @@ def chunk(config: str = typer.Option(..., "--config", help="Path to config YAML.
     - chunks_main.jsonl
     - chunks_references.jsonl
     """
+    _ = RefpipeConfig.from_yaml(config)
     raise NotImplementedError

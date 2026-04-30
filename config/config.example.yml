@@ -1,0 +1,20 @@
+# fluvial-refpipe operator config (example)
+#
+# Copy to config/config.yml and edit paths for your workstation / shared drive.
+# This YAML is literal-only for reproducibility (no env var interpolation).
+
+paths:
+  library_pdfs: "R:/FluvialGeomorph/references/library_pdfs"
+  quarantine_pdfs: "R:/FluvialGeomorph/references/quarantine_pdfs"
+  state_root: "R:/FluvialGeomorph/references/state"
+  runs_root: "R:/FluvialGeomorph/references/runs"
+
+scan:
+  # One or more folders to scan for PDFs. These can be local or shared drives.
+  # Add additional roots over time (piecewise updates).
+  source_roots:
+    - "R:/FluvialGeomorph/references/incoming_pdfs"
+
+thresholds:
+  candidate_threshold: 0.30
+  ingest_threshold: 0.65

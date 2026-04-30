@@ -4,7 +4,7 @@ exports/
 *.jsonl
 *.parquet
 
-# local configs (keep templates tracked)
+# operator config (local / shared-drive specific)
 config/config.yml
 config/patterns.yml
 

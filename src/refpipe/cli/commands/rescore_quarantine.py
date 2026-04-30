@@ -1,4 +1,5 @@
 from __future__ import annotations
+from refpipe.config import RefpipeConfig
 
 import typer
 
@@ -17,4 +18,5 @@ def rescore_quarantine(
     - Scope: quarantine only
     - Refresh policy: refresh OpenAlex only if stale (> max_age_days) or missing
     """
+    _ = RefpipeConfig.from_yaml(config)
     raise NotImplementedError

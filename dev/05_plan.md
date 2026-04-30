@@ -3,9 +3,9 @@
 Last updated: 2026-04-30
 
 Now (max 3):
-- [x] A1 Confirm editable install + CLI help
-- [x] A2 Establish CLI app + command stubs
-- [x] A3 Add pytest smoke tests
+- [ ] B1: Define config model + example config
+- [ ] B2: Implement `scan` to build run inventory + compute sha256
+- [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
 
 How to use:
 - This is the canonical ordered task list.

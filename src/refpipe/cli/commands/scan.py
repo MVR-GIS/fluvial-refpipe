@@ -1,4 +1,5 @@
 from __future__ import annotations
+from refpipe.config import RefpipeConfig
 
 import typer
 
@@ -18,4 +19,5 @@ def scan(config: str = typer.Option(..., "--config", help="Path to config YAML."
     - Updates shared-drive catalogs under R:/.../state/catalogs/ (with file lock)
     - Regenerates csv views (pdf_catalog_latest.csv, curated_latest.csv, quarantine_latest.csv)
     """
+    _ = RefpipeConfig.from_yaml(config)
     raise NotImplementedError
