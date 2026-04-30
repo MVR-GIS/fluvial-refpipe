@@ -139,6 +139,12 @@ The pipeline is configured by a YAML file passed via `--config`.
 - Example (tracked): `config/config.example.yml`
 - Operator config (NOT tracked): `config/config.yml` (gitignored)
 
+### Path semantics:
+
+ - Paths in `config/config.yml` may be absolute or relative.
+ - Relative paths are resolved relative to the directory containing the config file.
+
+
 Create your operator config:
 
 ```powershell
@@ -257,5 +263,5 @@ Notes:
   - Example config added: `config/config.example.yml` (copy to `config/config.yml`)
   - Validation behavior:
     - strict schema validation (Pydantic)
-    - Windows absolute drive paths required (no relative paths)
+    - paths may be absolute or relative (relative resolved relative to config file directory)
     - thresholds defaults: candidate=0.30, ingest=0.65; requires ingest >= candidate

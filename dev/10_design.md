@@ -152,6 +152,7 @@ Rationale: quarantine review needs evidence and context.
 - Configuration is validated at the CLI boundary (fail fast) before any stage executes.
 - YAML is treated as **literal-only** for reproducibility (no env-var interpolation).
 - Config fields/types/defaults are authoritative in `dev/40_schemas.md`.
+- Paths may be absolute or relative; relative paths are resolved relative to the directory containing the config file.
 
 ### Repo convention (locations)
 - Tracked example config: `config/config.example.yml`

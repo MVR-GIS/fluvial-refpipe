@@ -8,7 +8,8 @@ This section defines the authoritative schema for the operator YAML config passe
 
 Notes:
 - YAML is treated as literal-only (no env-var interpolation).
-- Windows paths are required and must be absolute drive paths (no relative paths).
+- Paths may be absolute or relative.
+- Relative paths are resolved relative to the directory containing the config file.
 
 ### Files
 - Example (tracked): `config/config.example.yml`
@@ -32,9 +33,9 @@ Required keys:
 - `paths.runs_root` (string): per-run artifact root (per-run subfolders live under this root, e.g., `runs/<run_id>/...`)
 
 Constraints:
-- Windows paths only; must be absolute drive paths like `R:/...` or `C:/...`
-- no relative paths
-- local dev mode is allowed (e.g., under `C:/workspace/_refpipe_dev/...`) when VPN/shared drives are unavailable
+- Paths may be absolute (Windows or POSIX) or relative.
+- Relative paths are resolved relative to the directory containing the config file.
+- Local dev mode is allowed (e.g., under `C:/workspace/_refpipe_dev/...`) when VPN/shared drives are unavailable.
 
 ### `scan` (required)
 
@@ -45,7 +46,7 @@ Required keys:
 
 Constraints:
 - entries must be non-empty strings
-- Windows absolute drive paths are expected (local or shared drives)
+- paths may be absolute or relative (relative resolved relative to config file directory)
 
 ### `thresholds` (optional)
 
