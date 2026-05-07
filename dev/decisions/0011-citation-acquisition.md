@@ -14,7 +14,7 @@ superseded_by: ""
 related_commits: []
 ---
 
-# ADR 0010: Citation acquisition: open/legal-only sources; resolver order; provenance logging
+# ADR 0011: Citation acquisition: open/legal-only sources; resolver order; provenance logging
 
 ## Context
 A new use case requires starting from a list of citation reference strings (e.g., copied from a References section) and retrieving full-text (or best-available) PDFs for downstream TEI extraction, chunking, and export.

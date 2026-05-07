@@ -76,8 +76,8 @@ Recommended keys (initial; may expand):
 - `acquire.user_agent` (string, optional): explicit User-Agent for requests
 
 Notes:
-- `acquire` writes PDFs and logs only under `runs/<run_id>/...` and does not write into curated/quarantine libraries.
-- Acquisition runs commonly use an additional untracked config instance (e.g., `config/config.acquire.yml`) for the explicit scan step; the schema is the same, but `scan.source_roots` is set to `runs/<run_id>/acquired_pdfs/`.
+- `acquire` writes PDFs and logs only under `runs/<run_id>/...` and does not write into curated/quarantine libraries. 
+- Acquisition runs commonly use an additional untracked config instance (e.g., `config/config.acquire.yml`) for the explicit scan step; the schema is the same, but `scan.source_roots` is set to `runs/<run_id>/acquired_pdfs/`. 
 
 ---
 
