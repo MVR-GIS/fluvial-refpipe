@@ -225,10 +225,57 @@ Key contract:
 From repo root:
 
 ```powershell
-conda activate analysis
-python -m pip install -e .
-refpipe acquire --config config/config.yml --citations path\to\citations.txt
+    conda activate analysis
+    python -m pip install -e .
+    refpipe acquire --config config/config.yml --citations path\to\citations.txt
 ```
+### Explicit scan step (required; dedicated acquisition config)
+
+To enter the normal pipeline (SHA256 identity), you MUST explicitly scan the acquired PDFs using a dedicated acquisition scan config file.
+
+Rationale:
+- `acquire` writes run-local artifacts only.
+- `scan` is the boundary where PDFs receive stable SHA256 identity (`document_id = sha256:<hex>`) and become eligible for downstream stages.
+
+#### 1) Create an acquisition scan config (untracked)
+
+From repo root:
+
+```powershell
+copy config/config.example.yml config/config.acquire.yml
+```
+
+#### 2) Edit `config/config.acquire.yml`
+
+Set `paths.*` to the same values you use in `config/config.yml`, and set `scan.source_roots` to the `acquired_pdfs/` folder for the run.
+
+Example (edit the `<runs_root>` and `<run_id>` placeholders):
+
+```yaml
+paths:
+  library_pdfs: "R:/FluvialGeomorph/references/library_pdfs"
+  quarantine_pdfs: "R:/FluvialGeomorph/references/quarantine_pdfs"
+  state_root: "R:/FluvialGeomorph/references/state"
+  runs_root: "R:/FluvialGeomorph/references/runs"
+scan:
+  source_roots:
+    - "R:/FluvialGeomorph/references/runs/<run_id>/acquired_pdfs"
+thresholds:
+  candidate_threshold: 0.30
+  ingest_threshold: 0.65
+```
+
+Notes:
+- This file is intentionally untracked because it is per-run (`run_id` changes).
+- Using a dedicated config keeps the scan boundary explicit and auditable.
+
+#### 3) Run scan using the acquisition config
+
+    refpipe scan --config config/config.acquire.yml
+
+Expected:
+- A scan run folder is created under `paths.runs_root` with a new `manifest.csv`.
+- `manifest.csv` contains SHA256 identity fields for the acquired PDFs.
 
 ---
 
