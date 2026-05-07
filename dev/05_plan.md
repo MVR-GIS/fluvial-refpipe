@@ -50,6 +50,7 @@ How to use:
     - CLI command stub: `src/refpipe/cli/commands/acquire.py`
     - Stage stub: `src/refpipe/stages/acquire_stage.py`
     - Minimal tests: help smoke test + one stage-level test that asserts the run artifacts are created deterministically for a tiny fixture citations file
+    - Docs updated/verified: dev/10_design.md, dev/30_runbook.md, dev/40_schemas.md, ADR-0010 (proposed/accepted).
 - [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
   - DoD: cached TEI exists keyed by sha256 (even if mocked initially)
   - Artifacts: cache folder + code

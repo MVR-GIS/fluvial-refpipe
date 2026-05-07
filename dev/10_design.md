@@ -40,6 +40,8 @@ ADRs (linkable index):
 - ADR-0007: [Hybrid chunking + separate references corpus](decisions/0007-hybrid-chunking-and-separate-references-corpus.md)
 - ADR-0008: [Conda-first env + pip editable installs](decisions/0008-conda-first-plus-pip-editable.md)
 - ADR-0009: [Windows/Positron supported terminal: PowerShell](decisions/0009-windows-terminal-support.md)
+- ADR-0010: [Allow OS-agnostic paths in operator config](decisions/0010-config-paths-os-agnostic-and-relative.md)
+- ADR-0011: [Citation acquisition](decisions/0011-citation-acquisition.md)
 
 ---
 

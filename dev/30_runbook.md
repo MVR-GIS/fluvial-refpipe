@@ -227,8 +227,9 @@ From repo root:
 ```powershell
 conda activate analysis
 python -m pip install -e .
-
 refpipe acquire --config config/config.yml --citations path\to\citations.txt
+```
+
 ---
 
 ## Scan (Milestone B2)
@@ -261,7 +262,7 @@ Notes:
 - B2 writes run artifacts only; durable catalogs and locks are added later (Milestone C).
 
 
-
+---
 
 ## Recent progress log (from dev/05_plan.md)
  

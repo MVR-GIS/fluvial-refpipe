@@ -69,6 +69,7 @@ It is intended to keep future chat sessions consistent, reproducible, and review
 
 ## CLI contract (required)
 Planned commands (names may evolve, but stages must exist):
+- acquire
 - scan
 - process
 - copy
