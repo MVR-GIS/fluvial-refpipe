@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typer
 
+from .commands.acquire import acquire
 from .commands.chunk import chunk
 from .commands.copy import copy
 from .commands.export import export
@@ -11,10 +12,11 @@ from .commands.rescore_quarantine import rescore_quarantine
 from .commands.scan import scan
 
 app = typer.Typer(
-    help="Fluvial reference pipeline: scan → extract → enrich → copy/quarantine → parse → chunk → export.",
+    help="Fluvial reference pipeline: acquire → scan → extract → enrich → copy/quarantine → parse → chunk → export.",
     no_args_is_help=True,
 )
 
+app.command()(acquire)
 app.command()(scan)
 app.command("rescore-quarantine")(rescore_quarantine)
 app.command()(process)
