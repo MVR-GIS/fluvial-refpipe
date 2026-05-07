@@ -59,6 +59,7 @@ refpipe --help
 
 Expected:
 - `refpipe --help` prints the top-level CLI help with commands:
+  - `acquire`
   - `scan`
   - `process`
   - `copy`
@@ -204,6 +205,30 @@ Notes:
 - Do not commit local paths in `config/config.yml` (it is intentionally untracked).
 - The production/shared-drive paths remain the canonical defaults shown in `config/config.example.yml`.
 
+---
+
+## Acquire (citations → run-local PDFs) (planned)
+
+The `acquire` command is an optional upstream entrypoint that starts from **citation reference text** rather than existing PDFs on disk.
+
+Key contract:
+- `acquire` writes **run-local** artifacts only under `runs/<run_id>/...`.
+- Acquired PDFs do not enter the normal pipeline until the operator explicitly runs `scan` against the run-local `acquired_pdfs/` folder.
+
+### Inputs
+- A plain-text citations file (one citation per line), e.g. copied from a References section.
+  - Blank lines are ignored.
+  - (Optional future: allow comments or numbering; initially keep it simple.)
+
+### Run acquire
+
+From repo root:
+
+```powershell
+conda activate analysis
+python -m pip install -e .
+
+refpipe acquire --config config/config.yml --citations path\to\citations.txt
 ---
 
 ## Scan (Milestone B2)

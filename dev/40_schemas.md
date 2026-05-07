@@ -21,6 +21,7 @@ Top-level keys:
 - `paths` (required): filesystem locations for PDFs, shared state, and per-run artifacts
 - `scan` (required): scan inputs (source roots)
 - `thresholds` (optional): Policy 1 thresholds (defaults apply if omitted)
+- `acquire` (optional): citation-to-PDF acquisition settings (used by the `acquire` stage)
 
 ### `paths` (required)
 
@@ -58,6 +59,27 @@ Keys:
 
 Constraints:
 - `ingest_threshold >= candidate_threshold`
+
+### `acquire` (optional)
+
+Type: object
+
+Purpose:
+- Configure the `acquire` stage, which attempts to retrieve PDFs for a list of citation strings using open/legal sources.
+
+Recommended keys (initial; may expand):
+- `acquire.allowed_sources` (string, default `"open_access_only"`): policy gate for which sources/URLs may be downloaded
+- `acquire.matching_min_confidence` (float, default `0.80`, range `[0, 1]`): minimum confidence required to auto-select a match for download
+- `acquire.timeout_seconds` (int, default `30`, range `>= 1`): HTTP timeout
+- `acquire.max_retries` (int, default `2`, range `>= 0`): retry count for transient failures
+- `acquire.rate_limit_per_minute` (int, default `30`, range `>= 1`): best-effort client-side throttling
+- `acquire.user_agent` (string, optional): explicit User-Agent for requests
+
+Notes:
+- `acquire` writes PDFs and logs only under `runs/<run_id>/...` and does not write into curated/quarantine libraries.
+- Acquisition runs commonly use an additional untracked config instance (e.g., `config/config.acquire.yml`) for the explicit scan step; the schema is the same, but `scan.source_roots` is set to `runs/<run_id>/acquired_pdfs/`.
+
+---
 
 ### Example (shared-drive default)
 

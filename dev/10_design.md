@@ -45,17 +45,22 @@ ADRs (linkable index):
 
 ## Non-negotiable principles (invariants)
 
-### 1) Identity is content-based (SHA256)
+### 1) Citation identity (pre-PDF) is separate from document identity
+- When running `acquire`, the pipeline assigns a `citation_id` (e.g., SHA256 of a normalized citation string) to track attempts and provenance.
+- `citation_id` is **not** a document identifier and MUST NOT be used in place of PDF SHA256 for durable joins.
+- Once a PDF is acquired and scanned, **document identity remains SHA256 of PDF bytes** (`document_id = sha256:<hex>`).
+
+### 2) Identity is content-based (SHA256)
 - **Document identity = SHA256 hash of PDF bytes**.
 - `document_id` format: `sha256:<hex>`.
 - File paths are **not identities**; they are unstable observations.
 
-### 2) Paths are treated as observations
+### 3) Paths are treated as observations
 - Maintain an append-only history table: `pdf_path_observations`.
 - Provide a single convenience field for humans: `last_observed_path`.
 - Never rely on any “original path” for joins; always join via sha256.
 
-### 3) Separation of concerns: code vs data
+### 4) Separation of concerns: code vs data
 - Git repo stores: code, docs, config templates, schemas, and tiny test fixtures only.
 - Agency filesystem stores: PDFs, catalogs/state, caches, run artifacts.
 
@@ -108,6 +113,18 @@ Even if single-operator is expected, we use a lock because it is low-cost and pr
 ---
 
 ## Policy 1: copy / quarantine / skip
+
+### Acquisition triage (pre-scan)
+The `acquire` stage introduces a pre-scan triage that is **not** the same as Policy 1 (which applies after PDFs are scanned/processed/scored).
+
+Acquisition outcomes are tracked as run artifacts to support auditability and human review, for example:
+- `downloaded_pdf_fulltext`: PDF downloaded and appears to be full text (best-effort heuristic)
+- `downloaded_pdf_unknown`: PDF downloaded but full-text status uncertain
+- `resolved_non_pdf`: a likely match was found but no PDF was retrievable (landing page only, etc.)
+- `resolved_but_blocked`: match found but access appears restricted (paywall/403/etc.)
+- `unresolved`: no confident match found
+
+No acquired item becomes curated/quarantine until it is explicitly scanned (SHA256 identity) and processed.
 
 ### Thresholds (current)
 - `candidate_threshold = 0.30`
@@ -178,6 +195,19 @@ Local dev mode must still preserve the core invariants:
 
 Planned stages (names may evolve; the stage concepts are required):
 
+- `acquire`
+  - input: a plain-text file of citation reference lines (e.g., APA/Chicago), typically copied from a References section
+  - purpose: best-effort retrieval of full-text (or best-available) PDFs for downstream processing
+  - output scope: **run-local artifacts only** (this stage MUST NOT write into curated/quarantine libraries)
+  - writes under `runs/<run_id>/`:
+    - `citations_input.jsonl` (one record per citation line; includes `citation_id`)
+    - `citation_resolution.jsonl` (attempt log + chosen match; includes provenance)
+    - `acquired_pdfs/` (downloaded PDFs for this run only)
+    - `acquire_manifest.csv` (operator-friendly summary)
+  - required follow-up:
+    - the operator MUST explicitly run `scan` against `runs/<run_id>/acquired_pdfs/` (via a dedicated acquisition config file; see runbook)
+    - `scan` is the boundary where PDFs receive stable SHA256 identity and enter the normal pipeline
+
 - `scan`
   - discover PDFs in configured source roots
   - compute sha256
@@ -215,7 +245,36 @@ Planned stages (names may evolve; the stage concepts are required):
 
 ---
 
-## Parsing outputs (run artifacts)
+## Run artifact schemas (selected; additive)
+
+### `runs/<run_id>/citations_input.jsonl` (from `acquire`)
+One JSON record per input citation line.
+
+Fields (initial):
+- `run_id` (string)
+- `citation_id` (string)
+- `line_number` (int)
+- `raw_text` (string)
+- `normalized_text` (string)
+- `ingested_at_utc` (string; ISO-8601)
+
+### `runs/<run_id>/citation_resolution.jsonl` (from `acquire`)
+One JSON record per citation resolution attempt / outcome (one or more per citation).
+
+Fields (initial):
+- `run_id` (string)
+- `citation_id` (string)
+- `final_status` (string; see acquisition triage statuses in `dev/10_design.md`)
+- `doi_candidate` (string, optional)
+- `openalex_id_candidate` (string, optional)
+- `selected_pdf_url` (string, optional)
+- `downloaded_path` (string, optional; run-local)
+- `http_status` (int, optional)
+- `content_type` (string, optional)
+- `bytes` (int, optional)
+- `recorded_at_utc` (string; ISO-8601)
+- `notes` (string, optional)
+
 
 ### `runs/<run_id>/manifest.csv`
 Backbone table (tabular) for the run. Includes:
