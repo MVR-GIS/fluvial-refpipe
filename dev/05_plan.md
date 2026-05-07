@@ -5,7 +5,7 @@ Last updated: 2026-04-30
 Now (max 3):
 - [x] B1: Define config model + example config
 - [x] B2: Implement `scan` to build run inventory + compute sha256
-- [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
+- [ ] B2.5: Add `acquire` stage stub + run artifacts contract (citations → run-local PDFs)
 
 How to use:
 - This is the canonical ordered task list.
@@ -33,6 +33,23 @@ How to use:
 - [x] B2: Implement `scan` to build run inventory + compute sha256
   - DoD: writes `runs/<run_id>/manifest.csv` with sha256 + path observation
   - Artifacts: run folder + sample output
+- [ ] B2.5: Add `acquire` stage stub + run artifacts contract (citations → run-local PDFs)
+  - DoD:
+    - `refpipe acquire --help` exists and documents required flags:
+      - `--config` (operator config)
+      - `--citations` (path to citations text file)
+    - Running `refpipe acquire --config config/config.yml --citations <file>` creates a new run folder under `paths.runs_root` and writes (even if PDF download is mocked initially):
+      - `citations_input.jsonl`
+      - `citation_resolution.jsonl`
+      - `acquire_manifest.csv`
+      - `acquired_pdfs/` (may be empty for stubbed download)
+    - The stage MUST NOT write into `library_pdfs/` or `quarantine_pdfs/` (run-local only).
+    - A follow-up explicit scan workflow exists (documented in runbook):
+      - operator uses an untracked per-run `config/config.acquire.yml` whose `scan.source_roots` points to `runs/<run_id>/acquired_pdfs/`
+  - Artifacts:
+    - CLI command stub: `src/refpipe/cli/commands/acquire.py`
+    - Stage stub: `src/refpipe/stages/acquire_stage.py`
+    - Minimal tests: help smoke test + one stage-level test that asserts the run artifacts are created deterministically for a tiny fixture citations file
 - [ ] B3: Implement TEI extraction cache hook (GROBID placeholder ok)
   - DoD: cached TEI exists keyed by sha256 (even if mocked initially)
   - Artifacts: cache folder + code
